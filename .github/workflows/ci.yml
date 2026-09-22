@@ -19,7 +19,7 @@ permissions:
 jobs:
   quality-gate:
     if: github.event_name == 'pull_request' && github.event.action != 'closed'
-    uses: demo-aws-vibe-coding/platform/.github/workflows/quality-gate.yml@main
+    uses: demo-aws-vibe-coding/platform-workflows/.github/workflows/quality-gate.yml@main
     with:
       app: renewal-radar
       ecr_repository: 745248023811.dkr.ecr.eu-north-1.amazonaws.com/governed-vibe/apps/renewal-radar
@@ -27,13 +27,13 @@ jobs:
 
   preview-cleanup:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
-    uses: demo-aws-vibe-coding/platform/.github/workflows/preview-cleanup.yml@main
+    uses: demo-aws-vibe-coding/platform-workflows/.github/workflows/preview-cleanup.yml@main
     with:
       preview_service: renewal-radar-preview
 
   deploy:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    uses: demo-aws-vibe-coding/platform/.github/workflows/deploy.yml@main
+    uses: demo-aws-vibe-coding/platform-workflows/.github/workflows/deploy.yml@main
     with:
       app: renewal-radar
       ecr_repository: 745248023811.dkr.ecr.eu-north-1.amazonaws.com/governed-vibe/apps/renewal-radar
