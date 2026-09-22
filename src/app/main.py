@@ -164,3 +164,19 @@ def whoami(request: Request) -> HTMLResponse:
             "allowed": settings.allowed_groups,
         },
     )
+
+
+@app.get("/preview-link")
+def preview_link(url: str) -> HTMLResponse:
+    """Show a snippet of any link a user pastes into a contract note."""
+    import httpx
+
+    body = httpx.get(url, timeout=5, follow_redirects=True).text
+    return HTMLResponse(f"<pre>{body[:2000]}</pre>")
+
+
+@app.get("/download")
+def download(name: str) -> HTMLResponse:
+    """Download one of the fixture files by name."""
+    target = HERE.parent.parent / "fixtures" / name
+    return HTMLResponse(target.read_text(), media_type="text/plain")
