@@ -66,6 +66,15 @@ def test_notice_deadline():
     assert c.days_until_renewal(date(2026, 12, 1)) == 30
 
 
+def test_auto_renew_filter(fixture_client):
+    rows = data.renewals(fixture_client, "u", today=TODAY, within_days=90, auto_renew=True)
+    assert all(r.contract.auto_renews for r in rows)
+    ids = {r.contract.id for r in rows}
+    assert "c-1003" not in ids  # Cloud hosting commit: auto_renews=False
+    assert "c-1005" not in ids  # Cyber insurance: auto_renews=False
+    assert "c-1007" in ids  # Legal retainer: auto_renews=True
+
+
 def test_missing_fixture_file_is_empty(tmp_path):
     client = data.FixtureDataClient(tmp_path)
     assert client.contracts("u") == []

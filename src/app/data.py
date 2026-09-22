@@ -196,6 +196,7 @@ def renewals(
     today: date,
     within_days: int,
     team: str | None = None,
+    auto_renew: bool = False,
 ) -> list[ContractView]:
     """Contracts renewing within ``within_days`` of ``today``, soonest first.
 
@@ -210,6 +211,8 @@ def renewals(
         if c.status != "active":
             continue
         if team and c.owner_team != team:
+            continue
+        if auto_renew and not c.auto_renews:
             continue
         days = c.days_until_renewal(today)
         if days < 0 or days > within_days:

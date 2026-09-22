@@ -17,6 +17,9 @@
         {% endfor %}
       </select>
     </label>
+    <label class="checkbox">
+      <input type="checkbox" name="auto_renew" value="true" {% if auto_renew %}checked{% endif %}> Only auto-renewing
+    </label>
     <span class="asof">As of {{ today.isoformat() }}</span>
   </form>
 </section>
