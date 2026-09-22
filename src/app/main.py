@@ -88,10 +88,12 @@ def _window(value: int | None) -> int:
     return value if value in WINDOWS else 90
 
 
-def _context(request: Request, within: int, team: str | None) -> dict:
+def _context(request: Request, within: int, team: str | None, auto_renew: bool = False) -> dict:
     user = current_caller(request)
     today = date.today()
-    rows = data.renewals(client, user, today=today, within_days=within, team=team or None)
+    rows = data.renewals(
+        client, user, today=today, within_days=within, team=team or None, auto_renew=auto_renew
+    )
     return {
         "request": request,
         "title": settings.title,
@@ -101,6 +103,7 @@ def _context(request: Request, within: int, team: str | None) -> dict:
         "windows": WINDOWS,
         "team": team or "",
         "teams": data.teams(client, user),
+        "auto_renew": auto_renew,
         "rows": rows,
         "attention": sum(1 for r in rows if r.tags),
     }
@@ -112,16 +115,20 @@ def healthz() -> JSONResponse:
 
 
 @app.get("/", response_class=HTMLResponse)
-def index(request: Request, within: int = 90, team: str = "") -> HTMLResponse:
+def index(
+    request: Request, within: int = 90, team: str = "", auto_renew: bool = False
+) -> HTMLResponse:
     return templates.TemplateResponse(
-        request, "index.html", _context(request, _window(within), team)
+        request, "index.html", _context(request, _window(within), team, auto_renew)
     )
 
 
 @app.get("/contracts", response_class=HTMLResponse)
-def contracts_partial(request: Request, within: int = 90, team: str = "") -> HTMLResponse:
+def contracts_partial(
+    request: Request, within: int = 90, team: str = "", auto_renew: bool = False
+) -> HTMLResponse:
     return templates.TemplateResponse(
-        request, "_contracts.html", _context(request, _window(within), team)
+        request, "_contracts.html", _context(request, _window(within), team, auto_renew)
     )
 
 
@@ -132,10 +139,11 @@ def toggle_flag(
     flagged: bool = Form(...),
     within: int = Form(90),
     team: str = Form(""),
+    auto_renew: bool = Form(False),
 ) -> HTMLResponse:
     client.set_flag(current_caller(request), contract_id, flagged)
     return templates.TemplateResponse(
-        request, "_contracts.html", _context(request, _window(within), team)
+        request, "_contracts.html", _context(request, _window(within), team, auto_renew)
     )
 
 

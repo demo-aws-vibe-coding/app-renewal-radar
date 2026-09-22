@@ -30,6 +30,14 @@ def test_bad_window_falls_back(web):
     assert "3 renewing" not in r.text or "renewing" in r.text
 
 
+def test_partial_respects_auto_renew(web):
+    r = web.get("/contracts", params={"within": 90, "auto_renew": "true"})
+    assert r.status_code == 200
+    assert "Cloud hosting commit" not in r.text  # c-1003: auto_renews=False
+    assert "Legal retainer" in r.text  # c-1007: auto_renews=True
+    assert "<html" not in r.text  # partial, not a full page
+
+
 def test_flag_toggle(web):
     r = web.post("/contracts/c-1001/flag", data={"flagged": "true", "within": 30, "team": ""})
     assert r.status_code == 200
