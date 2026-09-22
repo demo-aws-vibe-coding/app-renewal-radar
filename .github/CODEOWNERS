@@ -1,0 +1,3 @@
+# Platform-owned. Every change needs a review from the platform owners (QUA-4).
+# The author of a pull request can never approve it.
+*  @demo-aws-vibe-coding/platform-owners

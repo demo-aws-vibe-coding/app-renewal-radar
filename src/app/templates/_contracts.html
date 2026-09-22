@@ -1,0 +1,38 @@
+<div class="summary">
+  <span class="pill">{{ rows|length }} renewing</span>
+  {% if attention %}<span class="pill warn">{{ attention }} need attention</span>{% endif %}
+</div>
+
+{% if not rows %}
+<p class="empty">Nothing renews in this window.</p>
+{% else %}
+<table class="grid">
+  <thead>
+    <tr>
+      <th>Contract</th><th>Vendor</th><th>Team</th><th>Renews</th><th>Days left</th><th>Notice by</th><th>Status</th><th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for r in rows %}
+    <tr class="{% if 'notice-passed' in r.tags %}urgent{% elif r.tags %}warn{% endif %}">
+      <td><strong>{{ r.contract.name }}</strong><div class="muted">{{ r.contract.owner_email }}</div></td>
+      <td>{{ r.vendor.name if r.vendor else r.contract.vendor_id }}</td>
+      <td>{{ r.contract.owner_team }}</td>
+      <td>{{ r.contract.renewal_date.isoformat() }}</td>
+      <td class="num">{{ r.days_left }}</td>
+      <td>{{ r.contract.notice_deadline().isoformat() }}</td>
+      <td>
+        {% for t in r.tags %}<span class="tag {{ t }}">{{ t.replace('-', ' ') }}</span>{% endfor %}
+        {% if r.flagged %}<span class="tag flagged">flagged for review</span>{% endif %}
+      </td>
+      <td>
+        <form hx-post="/contracts/{{ r.contract.id }}/flag" hx-target="#contracts" hx-include="#filters">
+          <input type="hidden" name="flagged" value="{{ 'false' if r.flagged else 'true' }}">
+          <button type="submit" class="btn">{{ 'Unflag' if r.flagged else 'Flag' }}</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}

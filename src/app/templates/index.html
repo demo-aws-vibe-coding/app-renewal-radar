@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="controls">
+  <form id="filters" hx-get="/contracts" hx-target="#contracts" hx-trigger="change" hx-push-url="false">
+    <label>Renewing in the next
+      <select name="within">
+        {% for w in windows %}
+        <option value="{{ w }}" {% if w == within %}selected{% endif %}>{{ w }} days</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>Team
+      <select name="team">
+        <option value="" {% if not team %}selected{% endif %}>All teams</option>
+        {% for t in teams %}
+        <option value="{{ t }}" {% if t == team %}selected{% endif %}>{{ t }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <span class="asof">As of {{ today.isoformat() }}</span>
+  </form>
+</section>
+
+<section id="contracts">
+  {% include "_contracts.html" %}
+</section>
+{% endblock %}

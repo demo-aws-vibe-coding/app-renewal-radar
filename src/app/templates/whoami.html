@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="controls"><h2 style="margin:0">Who am I, and what can this tool see?</h2></section>
+
+<table class="grid" style="margin-top:12px">
+  <tbody>
+    <tr><th>Signed in as</th><td>{{ user }}</td></tr>
+    <tr><th>Your groups</th><td>{% for g in groups %}<span class="tag">{{ g }}</span>{% endfor %}</td></tr>
+    <tr><th>This tool is open to</th><td>{% for g in allowed %}<span class="tag">{{ g }}</span>{% else %}<span class="muted">everyone signed in</span>{% endfor %}</td></tr>
+    <tr><th>Identity verified by the data API</th><td>{{ 'yes, from your sign-in token' if info.user.verified else 'no (local development)' }}</td></tr>
+    <tr><th>Rows you can see</th><td>{{ info.row_scope }}</td></tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top:24px">Data scopes held by <em>{{ info.app.name }}</em></h3>
+<p class="muted">Granted at intake and recorded in the platform catalog. The data API refuses anything else, whoever is asking.</p>
+<table class="grid">
+  <thead><tr><th>Scope</th><th>Status</th></tr></thead>
+  <tbody>
+    {% for scope, granted in info.scopes.items() %}
+    <tr><td><code>{{ scope }}</code></td><td>{% if granted %}<span class="tag flagged">granted</span>{% else %}<span class="tag notice-passed">not granted</span>{% endif %}</td></tr>
+    {% else %}
+    <tr><td colspan="2" class="muted">No scope information in local development.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+<p style="margin-top:16px"><a href="/">Back to renewals</a></p>
+{% endblock %}

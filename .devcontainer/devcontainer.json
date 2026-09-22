@@ -1,0 +1,35 @@
+{
+  "$comment": "Reference devcontainer for app repos. The scaffolder copies this into <app>/.devcontainer/devcontainer.json. It is platform-owned: the pre-tool hook and managed deny rules stop the agent editing it.",
+  "name": "Governed workspace",
+  "image": "governed-workspace:local",
+  "runArgs": [
+    "--security-opt=seccomp=unconfined",
+    "--cap-drop=ALL",
+    "--cap-add=CHOWN", "--cap-add=DAC_OVERRIDE", "--cap-add=FOWNER", "--cap-add=SETGID", "--cap-add=SETUID",
+    "--network=governance",
+    "--hostname=workspace"
+  ],
+  "remoteUser": "vscode",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/${localWorkspaceFolderBasename},type=bind",
+  "mounts": [
+    "source=governed-vibe_claude-config,target=/home/vscode/.claude,type=volume",
+    "source=governed-vibe_audit-log,target=/var/log/claude-governance,type=volume",
+    "source=governed-vibe_aws-sso,target=/home/vscode/.aws,type=volume"
+  ],
+  "containerEnv": {
+    "CLAUDE_CONFIG_DIR": "/home/vscode/.claude",
+    "GOVERNANCE_USER": "${localEnv:GOVERNANCE_USER:citizen.dev@demo.local}",
+    "OTEL_RESOURCE_ATTRIBUTES": "deployment.environment=governed-demo,platform.name=paved-road,user.email=${localEnv:GOVERNANCE_USER:citizen.dev@demo.local}"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": ["anthropic.claude-code", "ms-python.python", "charliermarsh.ruff"],
+      "settings": {
+        "python.defaultInterpreterPath": "${containerWorkspaceFolder}/.venv/bin/python"
+      }
+    }
+  },
+  "postCreateCommand": "git config core.hooksPath .githooks && uv sync --all-groups && (claude plugin list 2>/dev/null | grep -q paved-road@paved-road || claude plugin install paved-road@paved-road)",
+  "forwardPorts": [8080]
+}

@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Platform-owned (AUD-2). Adds a provenance trailer to every commit made in the
+# governed workspace, from the stamp the SessionStart hook writes to
+# .governance/session.json. Commits made outside a Claude session get no trailer,
+# which is itself useful information at review time.
+msg_file="$1"
+stamp=".governance/session.json"
+[[ -r "$stamp" ]] || exit 0
+command -v jq >/dev/null || exit 0
+
+sid="$(jq -r '.session_id // empty' "$stamp")"
+model="$(jq -r '.model // "unknown"' "$stamp")"
+pv="$(jq -r '.policy_version // "unknown"' "$stamp")"
+[[ -z "$sid" ]] && exit 0
+
+grep -q '^Claude-Session:' "$msg_file" && exit 0
+printf '\nClaude-Session: %s\nClaude-Model: %s\nPolicy-Version: %s\n' "$sid" "$model" "$pv" >>"$msg_file"
+exit 0

@@ -1,0 +1,10 @@
+[
+  {"id": "v-acme-saas", "name": "Acme Analytics", "category": "Software", "contact": "accounts@acme-analytics.example"},
+  {"id": "v-northwind", "name": "Northwind Facilities", "category": "Facilities", "contact": "renewals@northwind.example"},
+  {"id": "v-globex", "name": "Globex Cloud", "category": "Infrastructure", "contact": "billing@globex.example"},
+  {"id": "v-initech", "name": "Initech Payroll", "category": "HR services", "contact": "support@initech.example"},
+  {"id": "v-umbrella", "name": "Umbrella Insurance", "category": "Insurance", "contact": "broker@umbrella.example"},
+  {"id": "v-stark", "name": "Stark Security", "category": "Security", "contact": "contracts@stark.example"},
+  {"id": "v-wayne", "name": "Wayne Legal", "category": "Legal", "contact": "retainers@wayne.example"},
+  {"id": "v-hooli", "name": "Hooli Recruiting", "category": "HR services", "contact": "partners@hooli.example"}
+]

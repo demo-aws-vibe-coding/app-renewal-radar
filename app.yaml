@@ -1,0 +1,16 @@
+# App manifest. Platform-owned: produced by the /new-app intake, changed only via the platform team.
+# The scaffolder registers this in platform/catalog/apps.yaml and the app-service Terraform module
+# reads it to size the service, grant data scopes, and configure the SSO group rule.
+name: renewal-radar
+title: Renewal Radar
+purpose: Shows procurement which vendor contracts renew in the next 30/60/90 days so nothing auto-renews unnoticed.
+owner:
+  email: sam.taylor@demo.local
+  team: procurement
+users:
+  groups: [procurement, finance]
+data_scopes: [vendors:read, contracts:read, contracts:flag]
+sensitivity: internal
+size: small
+created: 2026-09-22
+template_version: 0.1.0

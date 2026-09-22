@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="empty">
+  <h2>The platform data API said no</h2>
+  {% if detail is mapping and detail.error == 'scope_denied' %}
+    <p>This tool (<strong>{{ detail.app }}</strong>) does not hold the data scope <code>{{ detail.scope }}</code>.</p>
+    <p class="muted">{{ detail.detail }}</p>
+  {% else %}
+    <p>Status {{ status }}: {{ detail.detail if detail is mapping and detail.detail else detail }}</p>
+  {% endif %}
+  <p><a href="/whoami">See what this tool can access</a></p>
+</section>
+{% endblock %}

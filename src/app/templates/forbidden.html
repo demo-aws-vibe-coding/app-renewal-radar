@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="empty">
+  <h2>This tool is not available to you</h2>
+  <p>You are signed in as <strong>{{ user }}</strong>, but <em>{{ title }}</em> is limited to:
+    {% for g in allowed %}<span class="tag">{{ g }}</span>{% endfor %}
+  </p>
+  <p class="muted">Access groups are set by the tool's owner through the platform team.</p>
+</section>
+{% endblock %}

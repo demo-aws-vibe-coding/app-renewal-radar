@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ title }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}">
+  <script src="{{ url_for('static', path='htmx.min.js') }}" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">{{ title }}</div>
+    <div class="who">Signed in as <strong>{{ user }}</strong> · <a href="/whoami">what can this tool see?</a></div>
+  </header>
+  <main class="content">
+    {% block content %}{% endblock %}
+  </main>
+  <footer class="foot">Internal tool on the platform paved road. Data via the platform data API.</footer>
+</body>
+</html>
