@@ -23,3 +23,5 @@ uv run pytest
 ## How it gets to users
 
 Push a branch, open a pull request. CI runs the checks and builds a preview. A platform owner reviews, opens the preview, and merges. The app updates itself after the merge.
+
+- Bot identity check.
