@@ -11,15 +11,6 @@ from datetime import date
 
 from app.data import Caller, Contract, DataClient, Vendor
 
-_SORT_KEYS = {
-    "name": lambda r: r.contract.name.lower(),
-    "vendor": lambda r: (r.vendor.name if r.vendor else r.contract.vendor_id).lower(),
-    "team": lambda r: r.contract.owner_team.lower(),
-    "renewal_date": lambda r: r.contract.renewal_date,
-    "days_left": lambda r: r.days_left,
-    "notice_by": lambda r: r.contract.notice_deadline(),
-}
-
 
 @dataclass
 class ContractView:
@@ -38,8 +29,6 @@ def renewals(
     within_days: int,
     team: str | None = None,
     auto_renew: bool = False,
-    sort_by: str = "days_left",
-    sort_dir: str = "asc",
 ) -> list[ContractView]:
     """Contracts renewing within ``within_days`` of ``today``, soonest first.
 
@@ -74,8 +63,7 @@ def renewals(
                 tags=tags,
             )
         )
-    key = _SORT_KEYS.get(sort_by) or _SORT_KEYS["days_left"]
-    rows.sort(key=key, reverse=(sort_dir == "desc"))
+    rows.sort(key=lambda r: r.days_left)
     return rows
 
 
