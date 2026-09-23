@@ -1,4 +1,6 @@
-"""Routes. Full pages render a template; HTMX requests get a partial (templates/_*.html)."""
+"""Renewal Radar routes. Pages render templates; HTMX requests get partials (templates/_*.html).
+
+The tool's own rules live in renewals.py; data.py is the platform's data client."""
 
 from __future__ import annotations
 
@@ -10,7 +12,7 @@ from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from app import data
+from app import data, renewals
 from app.config import settings
 from app.identity import Identity, identity_from_request
 
@@ -91,7 +93,7 @@ def _window(value: int | None) -> int:
 def _context(request: Request, within: int, team: str | None, auto_renew: bool = False) -> dict:
     user = current_caller(request)
     today = date.today()
-    rows = data.renewals(
+    rows = renewals.renewals(
         client, user, today=today, within_days=within, team=team or None, auto_renew=auto_renew
     )
     return {
@@ -102,7 +104,7 @@ def _context(request: Request, within: int, team: str | None, auto_renew: bool =
         "within": within,
         "windows": WINDOWS,
         "team": team or "",
-        "teams": data.teams(client, user),
+        "teams": renewals.teams(client, user),
         "auto_renew": auto_renew,
         "rows": rows,
         "attention": sum(1 for r in rows if r.tags),

@@ -25,7 +25,7 @@ jobs:
       cluster: governed-vibe
       app: renewal-radar
       aws_region: eu-north-1
-      deploy_role_arn: arn:aws:iam::745248023811ole/governed-vibe-github-deploy
+      deploy_role_arn: arn:aws:iam::745248023811:role/governed-vibe-github-deploy
       ecr_repository: 745248023811.dkr.ecr.eu-north-1.amazonaws.com/governed-vibe/apps/renewal-radar
       preview_service: renewal-radar-preview
       apps_domain: apps.dadhatter.com
@@ -36,7 +36,7 @@ jobs:
     with:
       cluster: governed-vibe
       aws_region: eu-north-1
-      deploy_role_arn: arn:aws:iam::745248023811ole/governed-vibe-github-deploy
+      deploy_role_arn: arn:aws:iam::745248023811:role/governed-vibe-github-deploy
       preview_service: renewal-radar-preview
 
   deploy:
@@ -46,7 +46,7 @@ jobs:
       cluster: governed-vibe
       app: renewal-radar
       aws_region: eu-north-1
-      deploy_role_arn: arn:aws:iam::745248023811ole/governed-vibe-github-deploy
+      deploy_role_arn: arn:aws:iam::745248023811:role/governed-vibe-github-deploy
       ecr_repository: 745248023811.dkr.ecr.eu-north-1.amazonaws.com/governed-vibe/apps/renewal-radar
       service: renewal-radar
       preview_service: renewal-radar-preview

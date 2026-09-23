@@ -25,5 +25,5 @@ def web(monkeypatch, fixture_client) -> TestClient:
         def today(cls):
             return TODAY
 
-    monkeypatch.setattr(main, "date", FixedDate)
+    monkeypatch.setattr(main, "date", FixedDate, raising=False)
     return TestClient(main.app)

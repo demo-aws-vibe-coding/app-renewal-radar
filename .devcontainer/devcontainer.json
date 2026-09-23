@@ -19,6 +19,7 @@
   ],
   "containerEnv": {
     "CLAUDE_CONFIG_DIR": "/home/vscode/.claude",
+    "PLATFORM_GITHUB_BROKER": "http://github-broker:8080",
     "GOVERNANCE_USER": "${localEnv:GOVERNANCE_USER:citizen.dev@demo.local}",
     "OTEL_RESOURCE_ATTRIBUTES": "deployment.environment=governed-demo,platform.name=paved-road,user.email=${localEnv:GOVERNANCE_USER:citizen.dev@demo.local}"
   },

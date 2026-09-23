@@ -92,7 +92,9 @@ def test_denied_page(web, monkeypatch):
             },
         )
 
-    monkeypatch.setattr(data, "teams", boom)
+    from app import main as app_main
+
+    monkeypatch.setattr(app_main.client, "vendors", boom)
     r = web.get("/")
     assert r.status_code == 403
     assert "employees:compensation:read" in r.text and "platform team" in r.text
