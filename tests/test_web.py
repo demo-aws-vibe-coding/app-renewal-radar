@@ -38,6 +38,19 @@ def test_partial_respects_auto_renew(web):
     assert "<html" not in r.text  # partial, not a full page
 
 
+def test_sort_by_name_shows_indicator(web):
+    r = web.get("/contracts", params={"within": 90, "sort_by": "name", "sort_dir": "asc"})
+    assert r.status_code == 200
+    assert "↑" in r.text  # ascending indicator on active column
+    assert "<html" not in r.text  # partial, not a full page
+
+
+def test_sort_by_name_desc_shows_indicator(web):
+    r = web.get("/contracts", params={"within": 90, "sort_by": "name", "sort_dir": "desc"})
+    assert r.status_code == 200
+    assert "↓" in r.text
+
+
 def test_flag_toggle(web):
     r = web.post("/contracts/c-1001/flag", data={"flagged": "true", "within": 30, "team": ""})
     assert r.status_code == 200

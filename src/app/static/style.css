@@ -25,5 +25,7 @@ select { padding:6px 8px; border:1px solid var(--line); border-radius:6px; backg
 .tag.flagged { background:#e6f0fb; color:var(--accent); }
 .btn { font:inherit; font-size:13px; padding:5px 10px; border:1px solid var(--accent); color:var(--accent); background:#fff; border-radius:6px; cursor:pointer; }
 .btn:hover { background:var(--accent); color:#fff; }
+.sort-btn { background:none; border:none; font:inherit; font-size:13px; color:var(--muted); font-weight:600; cursor:pointer; padding:0; white-space:nowrap; }
+.sort-btn:hover { color:var(--accent); }
 .empty { color:var(--muted); padding:24px; text-align:center; background:#fff; border:1px dashed var(--line); border-radius:8px; }
 .foot { text-align:center; color:var(--muted); font-size:12px; padding:24px; }

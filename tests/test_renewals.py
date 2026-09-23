@@ -67,6 +67,31 @@ def test_notice_deadline():
     assert c.days_until_renewal(date(2026, 12, 1)) == 30
 
 
+def test_sort_by_name(fixture_client):
+    rows = renewals.renewals(fixture_client, "u", today=TODAY, within_days=365, sort_by="name")
+    names = [r.contract.name for r in rows]
+    assert names == sorted(names, key=str.lower)
+
+
+def test_sort_by_name_desc(fixture_client):
+    rows = renewals.renewals(
+        fixture_client, "u", today=TODAY, within_days=365, sort_by="name", sort_dir="desc"
+    )
+    names = [r.contract.name for r in rows]
+    assert names == sorted(names, key=str.lower, reverse=True)
+
+
+def test_sort_by_team(fixture_client):
+    rows = renewals.renewals(fixture_client, "u", today=TODAY, within_days=365, sort_by="team")
+    teams = [r.contract.owner_team for r in rows]
+    assert teams == sorted(teams, key=str.lower)
+
+
+def test_sort_by_unknown_falls_back_to_days_left(fixture_client):
+    rows = renewals.renewals(fixture_client, "u", today=TODAY, within_days=365, sort_by="bogus")
+    assert [r.days_left for r in rows] == sorted(r.days_left for r in rows)
+
+
 def test_auto_renew_filter(fixture_client):
     rows = renewals.renewals(fixture_client, "u", today=TODAY, within_days=90, auto_renew=True)
     assert all(r.contract.auto_renews for r in rows)
