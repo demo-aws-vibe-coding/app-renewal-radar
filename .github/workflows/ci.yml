@@ -1,5 +1,6 @@
 # Platform-owned. Every app repo has this same file; the real logic lives in the
-# platform's reusable workflows so an app author cannot weaken the gate.
+# platform's reusable workflows (public repo platform-workflows, published from the
+# platform repo) so an app author cannot weaken the gate.
 #
 #   quality-gate: ruff, pytest with coverage floor, dependency audit, AI security
 #                 review, container build, per-PR preview deploy          (QUA-2, QUA-3)
@@ -21,21 +22,31 @@ jobs:
     if: github.event_name == 'pull_request' && github.event.action != 'closed'
     uses: demo-aws-vibe-coding/platform-workflows/.github/workflows/quality-gate.yml@main
     with:
+      cluster: governed-vibe
       app: renewal-radar
+      aws_region: eu-north-1
+      deploy_role_arn: arn:aws:iam::745248023811ole/governed-vibe-github-deploy
       ecr_repository: 745248023811.dkr.ecr.eu-north-1.amazonaws.com/governed-vibe/apps/renewal-radar
       preview_service: renewal-radar-preview
+      apps_domain: apps.dadhatter.com
 
   preview-cleanup:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
     uses: demo-aws-vibe-coding/platform-workflows/.github/workflows/preview-cleanup.yml@main
     with:
+      cluster: governed-vibe
+      aws_region: eu-north-1
+      deploy_role_arn: arn:aws:iam::745248023811ole/governed-vibe-github-deploy
       preview_service: renewal-radar-preview
 
   deploy:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     uses: demo-aws-vibe-coding/platform-workflows/.github/workflows/deploy.yml@main
     with:
+      cluster: governed-vibe
       app: renewal-radar
+      aws_region: eu-north-1
+      deploy_role_arn: arn:aws:iam::745248023811ole/governed-vibe-github-deploy
       ecr_repository: 745248023811.dkr.ecr.eu-north-1.amazonaws.com/governed-vibe/apps/renewal-radar
       service: renewal-radar
       preview_service: renewal-radar-preview
