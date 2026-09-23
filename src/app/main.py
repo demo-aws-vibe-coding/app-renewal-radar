@@ -52,6 +52,7 @@ async def data_denied(request: Request, exc: data.DataAccessDenied) -> HTMLRespo
         request,
         "data_denied.html",
         {
+            **_base(request),
             "request": request,
             "title": settings.title,
             "user": current_user(request),
@@ -76,6 +77,7 @@ async def enforce_groups(request: Request, call_next):
                 request,
                 "forbidden.html",
                 {
+                    **_base(request),
                     "request": request,
                     "title": settings.title,
                     "user": ident.email,
@@ -90,6 +92,10 @@ def _window(value: int | None) -> int:
     return value if value in WINDOWS else 90
 
 
+def _base(request: Request) -> dict:
+    return {"logout_url": settings.logout_url}
+
+
 def _context(request: Request, within: int, team: str | None, auto_renew: bool = False) -> dict:
     user = current_caller(request)
     today = date.today()
@@ -97,6 +103,7 @@ def _context(request: Request, within: int, team: str | None, auto_renew: bool =
         client, user, today=today, within_days=within, team=team or None, auto_renew=auto_renew
     )
     return {
+        **_base(request),
         "request": request,
         "title": settings.title,
         "user": user.email,
@@ -158,6 +165,7 @@ def whoami(request: Request) -> HTMLResponse:
         request,
         "whoami.html",
         {
+            **_base(request),
             "request": request,
             "title": settings.title,
             "user": ident.email,

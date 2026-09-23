@@ -1,3 +1,19 @@
+def test_sign_out_link_hidden_by_default(web):
+    r = web.get("/")
+    assert r.status_code == 200
+    assert "Sign out" not in r.text
+
+
+def test_sign_out_link_shown_when_configured(web, monkeypatch):
+    from app.main import settings
+
+    monkeypatch.setattr(settings, "logout_url", "https://auth.example.com/logout")
+    r = web.get("/")
+    assert r.status_code == 200
+    assert 'href="https://auth.example.com/logout"' in r.text
+    assert "Sign out" in r.text
+
+
 def test_healthz(web):
     r = web.get("/healthz")
     assert r.status_code == 200

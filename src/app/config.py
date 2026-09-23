@@ -22,6 +22,8 @@ class Settings(BaseSettings):
     # Comma-separated groups from app.yaml (users.groups); set by the platform at deploy time.
     # Empty = no group restriction beyond sign-in. "*" in a user's groups matches everything.
     allowed_groups_raw: str = ""
+    # Sign-out URL supplied by the platform. Empty = no sign-out link shown (e.g. local dev).
+    logout_url: str = ""
 
     @property
     def allowed_groups(self) -> list[str]:

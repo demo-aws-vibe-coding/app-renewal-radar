@@ -10,7 +10,7 @@
 <body>
   <header class="topbar">
     <div class="brand">{{ title }}</div>
-    <div class="who">Signed in as <strong>{{ user }}</strong> · <a href="/whoami">what can this tool see?</a></div>
+    <div class="who">Signed in as <strong>{{ user }}</strong> · <a href="/whoami">what can this tool see?</a>{% if logout_url %} · <a href="{{ logout_url }}">Sign out</a>{% endif %}</div>
   </header>
   <main class="content">
     {% block content %}{% endblock %}
