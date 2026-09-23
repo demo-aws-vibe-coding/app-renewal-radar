@@ -90,11 +90,25 @@ def _window(value: int | None) -> int:
     return value if value in WINDOWS else 90
 
 
-def _context(request: Request, within: int, team: str | None, auto_renew: bool = False) -> dict:
+def _context(
+    request: Request,
+    within: int,
+    team: str | None,
+    auto_renew: bool = False,
+    sort_by: str = "days_left",
+    sort_dir: str = "asc",
+) -> dict:
     user = current_caller(request)
     today = date.today()
     rows = renewals.renewals(
-        client, user, today=today, within_days=within, team=team or None, auto_renew=auto_renew
+        client,
+        user,
+        today=today,
+        within_days=within,
+        team=team or None,
+        auto_renew=auto_renew,
+        sort_by=sort_by,
+        sort_dir=sort_dir,
     )
     return {
         "request": request,
@@ -106,6 +120,8 @@ def _context(request: Request, within: int, team: str | None, auto_renew: bool =
         "team": team or "",
         "teams": renewals.teams(client, user),
         "auto_renew": auto_renew,
+        "sort_by": sort_by,
+        "sort_dir": sort_dir,
         "rows": rows,
         "attention": sum(1 for r in rows if r.tags),
     }
@@ -118,19 +134,33 @@ def healthz() -> JSONResponse:
 
 @app.get("/", response_class=HTMLResponse)
 def index(
-    request: Request, within: int = 90, team: str = "", auto_renew: bool = False
+    request: Request,
+    within: int = 90,
+    team: str = "",
+    auto_renew: bool = False,
+    sort_by: str = "days_left",
+    sort_dir: str = "asc",
 ) -> HTMLResponse:
     return templates.TemplateResponse(
-        request, "index.html", _context(request, _window(within), team, auto_renew)
+        request,
+        "index.html",
+        _context(request, _window(within), team, auto_renew, sort_by, sort_dir),
     )
 
 
 @app.get("/contracts", response_class=HTMLResponse)
 def contracts_partial(
-    request: Request, within: int = 90, team: str = "", auto_renew: bool = False
+    request: Request,
+    within: int = 90,
+    team: str = "",
+    auto_renew: bool = False,
+    sort_by: str = "days_left",
+    sort_dir: str = "asc",
 ) -> HTMLResponse:
     return templates.TemplateResponse(
-        request, "_contracts.html", _context(request, _window(within), team, auto_renew)
+        request,
+        "_contracts.html",
+        _context(request, _window(within), team, auto_renew, sort_by, sort_dir),
     )
 
 
@@ -142,10 +172,14 @@ def toggle_flag(
     within: int = Form(90),
     team: str = Form(""),
     auto_renew: bool = Form(False),
+    sort_by: str = Form("days_left"),
+    sort_dir: str = Form("asc"),
 ) -> HTMLResponse:
     client.set_flag(current_caller(request), contract_id, flagged)
     return templates.TemplateResponse(
-        request, "_contracts.html", _context(request, _window(within), team, auto_renew)
+        request,
+        "_contracts.html",
+        _context(request, _window(within), team, auto_renew, sort_by, sort_dir),
     )
 
 
