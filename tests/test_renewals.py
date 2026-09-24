@@ -87,3 +87,29 @@ def test_build_client_picks_platform_when_url_set(tmp_path):
     assert isinstance(
         data.build_client("http://data-api", tmp_path, "app"), data.PlatformDataClient
     )
+
+
+def test_sort_by_vendor_ascending(fixture_client):
+    rows = renewals.renewals(fixture_client, "u", today=TODAY, within_days=365, sort="vendor")
+    names = [(r.vendor.name if r.vendor else r.contract.vendor_id).lower() for r in rows]
+    assert names == sorted(names)
+
+
+def test_sort_by_days_left_descending(fixture_client):
+    rows = renewals.renewals(
+        fixture_client, "u", today=TODAY, within_days=365, sort="days_left", sort_dir="desc"
+    )
+    days = [r.days_left for r in rows]
+    assert days == sorted(days, reverse=True)
+
+
+def test_sort_by_contract_name(fixture_client):
+    rows = renewals.renewals(fixture_client, "u", today=TODAY, within_days=365, sort="contract")
+    names = [r.contract.name.lower() for r in rows]
+    assert names == sorted(names)
+
+
+def test_unknown_sort_key_falls_back_to_days_left(fixture_client):
+    rows = renewals.renewals(fixture_client, "u", today=TODAY, within_days=365, sort="nonexistent")
+    days = [r.days_left for r in rows]
+    assert days == sorted(days)

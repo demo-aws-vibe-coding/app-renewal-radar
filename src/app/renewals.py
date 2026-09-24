@@ -6,10 +6,20 @@ easy to read, test and change.
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import date
 
 from app.data import Caller, Contract, DataClient, Vendor
+
+_SORT_KEYS: dict[str, Callable[[ContractView], object]] = {
+    "contract": lambda r: r.contract.name.lower(),
+    "vendor": lambda r: (r.vendor.name if r.vendor else r.contract.vendor_id).lower(),
+    "team": lambda r: r.contract.owner_team.lower(),
+    "renews": lambda r: r.contract.renewal_date,
+    "days_left": lambda r: r.days_left,
+    "notice_by": lambda r: r.contract.notice_deadline(),
+}
 
 
 @dataclass
@@ -29,6 +39,8 @@ def renewals(
     within_days: int,
     team: str | None = None,
     auto_renew: bool = False,
+    sort: str = "days_left",
+    sort_dir: str = "asc",
 ) -> list[ContractView]:
     """Contracts renewing within ``within_days`` of ``today``, soonest first.
 
@@ -63,7 +75,8 @@ def renewals(
                 tags=tags,
             )
         )
-    rows.sort(key=lambda r: r.days_left)
+    key_fn = _SORT_KEYS.get(sort, _SORT_KEYS["days_left"])
+    rows.sort(key=key_fn, reverse=(sort_dir == "desc"))
     return rows
 
 

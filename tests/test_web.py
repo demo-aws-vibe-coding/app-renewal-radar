@@ -44,3 +44,30 @@ def test_flag_toggle(web):
     assert "flagged for review" in r.text
     r = web.post("/contracts/c-1001/flag", data={"flagged": "false", "within": 30, "team": ""})
     assert "flagged for review" not in r.text
+
+
+def test_sort_header_shows_arrow_for_active_column(web):
+    r = web.get("/contracts", params={"sort": "vendor", "sort_dir": "asc"})
+    assert r.status_code == 200
+    assert "▲" in r.text
+
+
+def test_sort_desc_shows_down_arrow(web):
+    r = web.get("/contracts", params={"sort": "days_left", "sort_dir": "desc"})
+    assert r.status_code == 200
+    assert "▼" in r.text
+
+
+def test_sort_headers_have_htmx_attrs(web):
+    r = web.get("/contracts")
+    assert "hx-vals" in r.text
+    assert "sort-col" in r.text
+
+
+def test_flag_preserves_sort(web):
+    r = web.post(
+        "/contracts/c-1001/flag",
+        data={"flagged": "true", "within": 30, "team": "", "sort": "vendor", "sort_dir": "desc"},
+    )
+    assert r.status_code == 200
+    assert "▼" in r.text
