@@ -15,6 +15,10 @@ select { padding:6px 8px; border:1px solid var(--line); border-radius:6px; backg
 .grid { width:100%; border-collapse:collapse; background:#fff; border:1px solid var(--line); border-radius:8px; overflow:hidden; }
 .grid th, .grid td { padding:10px 12px; text-align:left; border-bottom:1px solid var(--line); vertical-align:top; }
 .grid th { font-size:13px; color:var(--muted); font-weight:600; background:#fafbfc; }
+.sort-col { cursor:pointer; user-select:none; white-space:nowrap; }
+.sort-col:hover { color:var(--ink); }
+.sort-col.sort-active { color:var(--accent); }
+.sort-arrow { font-size:11px; }
 .grid tr.warn td:first-child { box-shadow: inset 4px 0 0 var(--warn); }
 .grid tr.urgent td:first-child { box-shadow: inset 4px 0 0 var(--urgent); }
 .num { text-align:right; font-variant-numeric: tabular-nums; }
