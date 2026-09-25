@@ -4,17 +4,34 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{ title }}</title>
+  <script>(function(){var t=localStorage.getItem('rr-theme');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
   <link rel="stylesheet" href="/static/style.css">
   <script src="/static/htmx.min.js" defer></script>
 </head>
 <body>
   <header class="topbar">
     <div class="brand">{{ title }}</div>
-    <div class="who">Signed in as <strong>{{ user }}</strong> · <a href="/whoami">what can this tool see?</a></div>
+    <div class="who">
+      Signed in as <strong>{{ user }}</strong> · <a href="/whoami">what can this tool see?</a>
+      <button id="theme-btn" class="theme-toggle" onclick="toggleTheme()">Dark mode</button>
+    </div>
   </header>
   <main class="content">
     {% block content %}{% endblock %}
   </main>
   <footer class="foot">Internal tool on the platform paved road. Data via the platform data API.</footer>
+  <script>
+    function toggleTheme() {
+      var h = document.documentElement;
+      var next = h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      h.setAttribute('data-theme', next);
+      localStorage.setItem('rr-theme', next);
+      document.getElementById('theme-btn').textContent = next === 'dark' ? 'Light mode' : 'Dark mode';
+    }
+    (function () {
+      var t = document.documentElement.getAttribute('data-theme');
+      if (t === 'dark') document.getElementById('theme-btn').textContent = 'Light mode';
+    })();
+  </script>
 </body>
 </html>
