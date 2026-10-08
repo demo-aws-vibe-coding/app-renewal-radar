@@ -31,3 +31,6 @@ select { padding:6px 8px; border:1px solid var(--line); border-radius:6px; backg
 .btn:hover { background:var(--accent); color:#fff; }
 .empty { color:var(--muted); padding:24px; text-align:center; background:#fff; border:1px dashed var(--line); border-radius:8px; }
 .foot { text-align:center; color:var(--muted); font-size:12px; padding:24px; }
+.chart-card { background:#fff; border:1px solid var(--line); border-radius:8px; padding:16px 20px; margin-bottom:20px; }
+.chart-title { font-size:14px; font-weight:600; color:var(--muted); margin:0 0 12px; }
+.expiry-chart { display:block; width:100%; max-width:580px; }

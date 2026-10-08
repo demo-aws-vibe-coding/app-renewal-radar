@@ -82,3 +82,39 @@ def renewals(
 
 def teams(client: DataClient, user: Caller) -> list[str]:
     return sorted({c.owner_team for c in client.contracts(user)})
+
+
+@dataclass
+class MonthBucket:
+    label: str
+    count: int
+    year: int
+    month: int
+
+
+def expiring_by_month(
+    client: DataClient,
+    user: Caller,
+    *,
+    today: date,
+    months: int = 6,
+) -> list[MonthBucket]:
+    """Count active contracts expiring in each of the next `months` calendar months."""
+    buckets: dict[tuple[int, int], MonthBucket] = {}
+    y, m = today.year, today.month
+    for _ in range(months):
+        label = date(y, m, 1).strftime("%b %Y")
+        buckets[(y, m)] = MonthBucket(label=label, count=0, year=y, month=m)
+        m += 1
+        if m > 12:
+            m = 1
+            y += 1
+
+    for c in client.contracts(user):
+        if c.status != "active":
+            continue
+        key = (c.renewal_date.year, c.renewal_date.month)
+        if key in buckets:
+            buckets[key].count += 1
+
+    return list(buckets.values())

@@ -181,6 +181,49 @@ def toggle_flag(
     )
 
 
+@app.get("/chart/expiring", response_class=HTMLResponse)
+def chart_expiring(request: Request) -> HTMLResponse:
+    user = current_caller(request)
+    today = date.today()
+    buckets = renewals.expiring_by_month(client, user, today=today)
+    max_count = max((b.count for b in buckets), default=0)
+
+    # Pre-compute SVG geometry in Python so the template stays simple.
+    chart_left, baseline_y, chart_top = 8, 128, 12
+    n = len(buckets)
+    slot_w = 564 // n if n else 94
+    bar_w = min(64, slot_w - 16)
+    bar_gap = (slot_w - bar_w) // 2
+    max_h = baseline_y - chart_top
+    scale = max_h / max(max_count, 1)
+
+    bars = []
+    for i, b in enumerate(buckets):
+        bx = chart_left + i * slot_w + bar_gap
+        bh = int(b.count * scale)
+        bars.append(
+            {
+                "label": b.label,
+                "count": b.count,
+                "x": bx,
+                "y": baseline_y - bh,
+                "w": bar_w,
+                "h": bh,
+                "cx": bx + bar_w // 2,
+            }
+        )
+
+    return templates.TemplateResponse(
+        request,
+        "_expiring_chart.html",
+        {
+            "request": request,
+            "bars": bars,
+            "baseline_y": baseline_y,
+        },
+    )
+
+
 @app.get("/whoami", response_class=HTMLResponse)
 def whoami(request: Request) -> HTMLResponse:
     """Who am I, and what can this app see on my behalf? Answered by the data API."""

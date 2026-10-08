@@ -1,0 +1,23 @@
+<div class="chart-card">
+  <h2 class="chart-title">Contracts expiring in the next 6 months</h2>
+  <svg class="expiry-chart" viewBox="0 0 580 168" aria-label="Bar chart of contracts expiring per month" role="img">
+    <title>Contracts expiring per month over the next six months</title>
+    <!-- baseline -->
+    <line x1="8" y1="{{ baseline_y }}" x2="572" y2="{{ baseline_y }}" stroke="#e1e6eb" stroke-width="1"/>
+    {% for bar in bars %}
+    <g>
+      {% if bar.count > 0 %}
+      <rect x="{{ bar.x }}" y="{{ bar.y }}" width="{{ bar.w }}" height="{{ bar.h }}" rx="4" fill="#2b6cb0">
+        <title>{{ bar.label }}: {{ bar.count }} contract{{ 's' if bar.count != 1 else '' }}</title>
+      </rect>
+      <text x="{{ bar.cx }}" y="{{ bar.y - 4 }}" text-anchor="middle" font-size="13" font-family="inherit" fill="#1f2933">{{ bar.count }}</text>
+      {% else %}
+      <rect x="{{ bar.x }}" y="{{ baseline_y - 2 }}" width="{{ bar.w }}" height="2" rx="1" fill="#e1e6eb">
+        <title>{{ bar.label }}: 0 contracts</title>
+      </rect>
+      {% endif %}
+      <text x="{{ bar.cx }}" y="{{ baseline_y + 16 }}" text-anchor="middle" font-size="12" font-family="inherit" fill="#6b7a89">{{ bar.label }}</text>
+    </g>
+    {% endfor %}
+  </svg>
+</div>
