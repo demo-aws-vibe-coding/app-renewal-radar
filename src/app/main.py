@@ -189,7 +189,8 @@ def chart_expiring(request: Request) -> HTMLResponse:
     max_count = max((b.count for b in buckets), default=0)
 
     # Pre-compute SVG geometry in Python so the template stays simple.
-    chart_left, baseline_y, chart_top = 8, 128, 12
+    # chart_top=32 ensures count labels above tall bars never clip the viewBox edge.
+    chart_left, baseline_y, chart_top = 8, 140, 32
     n = len(buckets)
     slot_w = 564 // n if n else 94
     bar_w = min(64, slot_w - 16)

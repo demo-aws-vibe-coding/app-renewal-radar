@@ -1,9 +1,5 @@
 {% extends "base.html" %}
 {% block content %}
-<section id="expiring-chart" hx-get="/chart/expiring" hx-trigger="load">
-  <div class="chart-card"><p class="muted" style="padding:32px 0;text-align:center">Loading chart…</p></div>
-</section>
-
 <section class="controls">
   <form id="filters" hx-get="/contracts" hx-target="#contracts" hx-trigger="change" hx-push-url="false">
     <label>Renewing in the next
@@ -30,5 +26,9 @@
 
 <section id="contracts">
   {% include "_contracts.html" %}
+</section>
+
+<section id="expiring-chart" hx-get="/chart/expiring" hx-trigger="load">
+  <div class="chart-card"><p class="muted" style="padding:32px 0;text-align:center">Loading chart…</p></div>
 </section>
 {% endblock %}
